@@ -1,0 +1,62 @@
+﻿@{
+    
+}
+
+<head>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.css" />
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+    <script src="/scripts/tableTools.js"></script>
+<script>
+        $(document).ready(function () {
+            var t = $('#example').dataTable({
+               // "sDom": 'T<"clear">lfrtip',
+                //"oTableTools": {
+                    //"sRowSelect": "single"
+                //},
+                //"serverSide": true,
+                "ajax": "/events",
+                "columns": [
+                    { "data": "Subject" },
+                    { "data": "Status" },
+                    { "data": "Priority" },
+                    { "data": "Due" },
+                    { "data": "Created" },
+                    { "data": "Updated" },
+                    { "data": "Completed" }
+
+                ]
+            });
+
+            $('#example tbody').on('click', 'tr', function () {
+                var item = t.fnGetData(this);
+                var details = $("#details");
+                details.html('');
+                
+                item.Comments.forEach(function (comment) {
+                    details.append("<p>" + comment.Time + ": " + comment.Message + "</p>");
+                });
+
+                
+            });
+        });
+    </script>
+</head>
+<body>
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Due</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Completed</th>
+            </tr>
+        </thead>
+    </table>
+    <div id="details">
+
+    </div>
+</body>
