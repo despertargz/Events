@@ -3,6 +3,7 @@
 }
 
 <head>
+    <title>Events</title>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <!--datatables-->
@@ -17,6 +18,8 @@
 
     <script src="~/Scripts/moment.min.js"></script>
 <script>
+    // functions
+
     function formatDate(date) {
         if (date) {
             return moment(date).format("MM/DD/YY");
@@ -26,6 +29,26 @@
         }
     }
 
+    function createAnEvent() {
+        var data = new Object();
+        data.Priority = $("#priority").val();
+        data.Subject = $("#subject").val();
+        data.Description = $("#description").val();
+        data.Due = $("#duedate").val();
+
+        $.ajax({
+            url: '/events',
+            method: 'POST',
+            data: data,
+            success: function () {
+                $("#example").DataTable().ajax.reload()
+                $("#myModal").modal('toggle');
+                $("#myModal").find('form')[0].reset()
+            }
+        });
+    }
+
+    // main
         $(document).ready(function () {
             var t = $('#example').dataTable({
                 "ajax": "/events",
@@ -48,8 +71,6 @@
                 item.Comments.forEach(function (comment) {
                     details.append("<p>" + comment.Time + ": " + comment.Message + "</p>");
                 });
-
-                
             });
         });
     </script>
@@ -95,7 +116,7 @@
                     <form role="form">
                         <div class="form-group">
                             <label for="subject">Subject</label>
-                            <input type="tex" class="form-control" id="subject" placeholder="">
+                            <input type="text" class="form-control" id="subject" placeholder="">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Description</label>
@@ -104,18 +125,22 @@
                         <div class="form-group">
                             <label>Priority</label>
                             <select class="form-control" id="priority">
-                                <option>Very Low</option>
-                                <option>Low</option>
-                                <option selected="selected">Normal</option>
-                                <option>High</option>
-                                <option>VeryHigh</option>
+                                <option value="1">Very Low</option>
+                                <option value="2">Low</option>
+                                <option value="3" selected="selected">Normal</option>
+                                <option value="4">High</option>
+                                <option value="5">VeryHigh</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="text" class="form-control" id="duedate" placeholder="">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" onclick="createAnEvent()">Create</button>
                 </div>
             </div>
         </div>
