@@ -60,6 +60,7 @@ namespace Mev.Events.Web.Api
             var col = this.GetCollection();
             var myEvent = col.FindOneById(new ObjectId(id));
             myEvent.Status = (Status)status;
+            myEvent.Updated = DateTime.Now;
             col.Save(myEvent);
         }
 
@@ -69,6 +70,7 @@ namespace Mev.Events.Web.Api
             var col = this.GetCollection();
             var myEvent = col.FindOneById(new ObjectId(id));
             myEvent.Priority = priority;
+            myEvent.Updated = DateTime.Now;
             col.Save(myEvent);
         }
 
@@ -78,6 +80,7 @@ namespace Mev.Events.Web.Api
             var col = this.GetCollection();
             var myEvent = col.FindOneById(id);
             myEvent.Comments.Add(new Comment() { Time = DateTime.Now, Message = comment });
+            myEvent.Updated = DateTime.Now;
             col.Save(myEvent);
         }
 
@@ -87,6 +90,7 @@ namespace Mev.Events.Web.Api
             var col = this.GetCollection();
             var myEvent = col.FindOneById(id);
             myEvent.Tags.Add(new Tag() { Name = tag });
+            myEvent.Updated = DateTime.Now;
             col.Save(myEvent);
         }
 
@@ -96,6 +100,7 @@ namespace Mev.Events.Web.Api
             var col = this.GetCollection();
             var myEvent = col.FindOneById(id);
             myEvent.Data.key = value;
+            myEvent.Updated = DateTime.Now;
             col.Save(myEvent);
             
         }
