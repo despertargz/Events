@@ -1,5 +1,6 @@
 ﻿using AttributeRouting.Web.Http;
 using Mev.Events.Lib;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -54,13 +55,21 @@ namespace Mev.Events.Web.Api
         }
 
         [POST("events/{id}/status")]
-        public void SetStatus(string id, Status status)
+        public void SetStatus(string id, int status)
         {
             var col = this.GetCollection();
-            var myEvent = col.FindOneById(id);
-            myEvent.Status = status;
+            var myEvent = col.FindOneById(new ObjectId(id));
+            myEvent.Status = (Status)status;
             col.Save(myEvent);
+        }
 
+        [POST("events/{id}/priority")]
+        public void SetStatus(string id, Priority priority)
+        {
+            var col = this.GetCollection();
+            var myEvent = col.FindOneById(new ObjectId(id));
+            myEvent.Priority = priority;
+            col.Save(myEvent);
         }
 
         [POST("events/{id}/comments")]
