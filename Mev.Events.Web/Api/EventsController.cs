@@ -51,6 +51,7 @@ namespace Mev.Events.Web.Api
                 Subject = newEvent.Subject,
                 Status = Status.Pending,
                 Updated = DateTime.Now,
+                Tags = newEvent.Labels
             });
         }
 
@@ -89,7 +90,7 @@ namespace Mev.Events.Web.Api
         {
             var col = this.GetCollection();
             var myEvent = col.FindOneById(id);
-            myEvent.Tags.Add(new Tag() { Name = tag });
+            myEvent.Tags.Add(tag);
             myEvent.Updated = DateTime.Now;
             col.Save(myEvent);
         }
@@ -112,6 +113,7 @@ namespace Mev.Events.Web.Api
         public string Subject { get; set; }
         public DateTime? Due { get; set; }
         public Priority Priority { get; set; }
+        public List<string> Labels { get; set; }
     }
     
 }

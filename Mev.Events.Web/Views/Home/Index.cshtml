@@ -40,7 +40,11 @@
                 <option value="5">Very High</option>
             </select>
             <p class="detailLabel">Tags</p>
-            <p id="tags"></p>
+            <div>
+                <button class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                <p style="font-size:32px" id="tags"><span class="label label-default">Comcast</span><span style="margin-left:2px" class="label label-default">Call</span></p>
+            </div>
+            
             <p class="detailLabel">Data</p>
             <div id="data"></div>
             <p class="detailLabel">Comments</p>
@@ -84,23 +88,35 @@
         return statusLookup[status];
     }
 
+    // create event
+
     function createAnEvent() {
         var data = new Object();
         data.Priority = $("#priority").val();
         data.Subject = $("#subject").val();
         data.Description = $("#description").val();
         data.Due = $("#duedate").val();
+        data.Labels = $("#labels .label").map(function (i, v) { return $(v).html(); }).toArray();
 
         $.ajax({
             url: '/events',
             method: 'POST',
-            data: data,
+            data: JSON.stringify(data),
+            contentType: "application/json",
             success: function () {
                 $("#example").DataTable().ajax.reload()
                 $("#myModal").modal('toggle');
                 $("#myModal").find('form')[0].reset()
             }
         });
+    }
+
+    function addTag() {
+        var newLabel = $("#newLabel").val();
+        $("#newLabel").val('');
+        $("#newLabel").focus();
+        $("#labels").append('<p style="margin-left: 3px; display:inline; font-size:20px;"><span style="background-color:darkblue;" class="label label-default">' + newLabel + '</span></p>');
+        
     }
 
     function setStatus() {
@@ -226,6 +242,14 @@
                         <div class="form-group">
                             <label>Due Date</label>
                             <input type="text" class="form-control" id="duedate" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label>Tags</label><br />
+                            <div>
+                                <input id="newLabel" style="width:90%; display:inline" type="text" class="form-control">
+                                <button class="btn btn-default" type="button" onclick="addTag()"><span class="glyphicon glyphicon-plus"> </span></button>
+                            </div>
+                            <div id="labels" style="margin-top:10px"></div>
                         </div>
                     </form>
                 </div>
