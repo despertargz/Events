@@ -13,10 +13,8 @@ namespace Mev.Events.Web.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Test()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
