@@ -39,6 +39,7 @@
             <div class="col-sm-1">
                 <button class="btn btn-success">Add</button>
             </div>
+            <div class="childContainer"></div>
         </div>
     </script>
 
@@ -64,14 +65,21 @@
             newRow.find("button").click(add_OnClick);
             
             if (level > 0) {
-                newRow.css("margin-left", (level * 50) + "px");
+                newRow.css("margin-left", (level * 100) + "px");
             }
 
             if (parent[0].id == "mainForm") {
                 parent.append(newRow);
             }
-            else {
+            else if (increaseLevel) {
                 parent.after(newRow);
+            }
+            else {
+                var sameLevelRows = parent.parent().children().filter(function (i,o) {
+                    return $(o).data("level") == level;
+                });
+
+                sameLevelRows.last().after(newRow);
             }
 
             newRow.find(".dataform-key").focus();
