@@ -32,14 +32,15 @@
             <div class="col-sm-3">
                 <select class="form-control">
                     <option selected="selected">Text</option>
-                    <option>List</option>
                     <option>Object</option>
                 </select>
             </div>
             <div class="col-sm-1">
                 <button class="btn btn-success">Add</button>
             </div>
-            <div class="childContainer"></div>
+        </div>
+        <div class="form-group" style="margin-left: 100px">
+            <div role="form" class="form-horizontal"></div>
         </div>
     </script>
 
@@ -50,10 +51,6 @@
         }
 
         function appendRow(increaseLevel, parent) {
-            if (parent == null) {
-                parent = $("#mainForm");
-            }
-
             var level = parent.data("level");
             if (increaseLevel) {
                 level += 1;
@@ -65,21 +62,14 @@
             newRow.find("button").click(add_OnClick);
             
             if (level > 0) {
-                newRow.css("margin-left", (level * 100) + "px");
+                //newRow.css("margin-left", "100px");
             }
 
-            if (parent[0].id == "mainForm") {
-                parent.append(newRow);
-            }
-            else if (increaseLevel) {
-                parent.after(newRow);
+            if (increaseLevel) {
+                parent.next(".form-group").find(".form-horizontal").append(newRow);
             }
             else {
-                var sameLevelRows = parent.parent().children().filter(function (i,o) {
-                    return $(o).data("level") == level;
-                });
-
-                sameLevelRows.last().after(newRow);
+                parent.closest(".form-horizontal").append(newRow);
             }
 
             newRow.find(".dataform-key").focus();
@@ -99,25 +89,15 @@
                 
                 $(this).prop('disabled', true);
             }
-            else if (valueType == "List") {
-                value.val("Click to edit...");
-                value.click(createList);
-                $(this).prop('disabled', true);
-            }
-            else {
-                value.val("");
-            }
         }
 
-        function createList() {
-            alert('editing list!');
-        }
+        
 
     </script>
 
     <script>
         $(document).ready(function () {
-            appendRow(false, null);
+            appendRow(false, $("#mainForm"));
         });
     </script>
 </head>

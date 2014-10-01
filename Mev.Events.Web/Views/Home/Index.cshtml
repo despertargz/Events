@@ -145,6 +145,11 @@
         });
     }
 
+    function toggleModal_createEvent() {
+        $("#modalCreateEvent").modal();
+        appendRow(false, $("#dataform-mainform"));
+    }
+
     // main
         $(document).ready(function () {
             var t = $('#example').dataTable({
@@ -190,7 +195,7 @@
 <body>
     <div id="page">
         <div id="header">
-            <button class="btn btn-success" data-toggle="modal" data-target="#myModal">Create</button>
+            <button class="btn btn-success" onclick="toggleModal_createEvent()">Create</button>
         </div>
         <div id="content">
             <table id="example" class="display" cellspacing="0" width="100%">
@@ -211,8 +216,88 @@
         </div>
     </div>
 
+    <!-- Data Form -->
+
+    <script id="templateFormRow" type="text/html">
+        <div class="form-group">
+            <div class="col-sm-4">
+                <input type="text" class="form-control dataform-key" placeholder="">
+            </div>
+            <div class="col-sm-4 dataform-value-wrapper">
+                <input type="text" class="form-control  dataform-value" placeholder="">
+            </div>
+            <div class="col-sm-3">
+                <select class="form-control">
+                    <option selected="selected">Text</option>
+                    <option>Object</option>
+                </select>
+            </div>
+            <div class="col-sm-1">
+                <button class="btn btn-success">Add</button>
+            </div>
+        </div>
+        <div class="form-group" style="margin-left: 100px">
+            <div role="form" class="form-horizontal"></div>
+        </div>
+    </script>
+
+    <script>
+        function add_OnClick() {
+            var parent = $(this).closest(".form-group");
+            appendRow(false, parent);
+        }
+
+        function appendRow(increaseLevel, parent) {
+            var level = parent.data("level");
+            if (increaseLevel) {
+                level += 1;
+            }
+
+            var newRow = $($("#templateFormRow").text());
+            newRow.data("level", level);
+            newRow.find("select").change(updateType);
+            newRow.find("button").click(add_OnClick);
+
+            if (level > 0) {
+                //newRow.css("margin-left", "100px");
+            }
+
+            if (increaseLevel) {
+                parent.next(".form-group").find(".form-horizontal").append(newRow);
+            }
+            else {
+                parent.closest(".form-horizontal").append(newRow);
+            }
+
+            newRow.find(".dataform-key").focus();
+            event.preventDefault();
+        }
+
+        function updateType() {
+            var valueType = $(this).val();
+            var valueWrapper = $(this).parent().siblings('.dataform-value-wrapper');
+            var value = valueWrapper.children();
+            var formGroup = $(this).closest(".form-group");
+
+            if (valueType == "Object") {
+                value.prop('disabled', true);
+                var nextLevel = formGroup.data("level") + 1;
+                appendRow(true, formGroup);
+
+                $(this).prop('disabled', true);
+            }
+        }
+
+        function createForm() {
+            var mainForm = $('<form id="mainForm" role="form" class="form-horizontal" data-level="0"></form>');
+            appendRow(false, mainForm);
+            return mainForm;
+        }
+    </script>
+
+
     <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCreateEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -251,6 +336,10 @@
                             </div>
                             <div id="labels" style="margin-top:10px"></div>
                         </div>
+                        <div class="form-group">
+                            <div id="dataform-mainform" role="form" class="form-horizontal" data-level="0"></div>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
