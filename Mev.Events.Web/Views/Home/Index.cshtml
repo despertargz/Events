@@ -90,6 +90,18 @@
 
     // create event
 
+    function getDynamicData(rows) {
+        var list = [];
+        rows.each(function (index,row) {
+            if (!$(row).hasClass("child-container") && $(row).find(".dataform-type").val() == "Text") {
+                var key = $(row).find(".dataform-key").val();
+                var value = $(row).find(".dataform-value").val();
+                list.push({ key: key, value: value });
+            }
+        });
+        return list;
+    }
+
     function createAnEvent() {
         var data = new Object();
         data.Priority = $("#priority").val();
@@ -97,6 +109,7 @@
         data.Description = $("#description").val();
         data.Due = $("#duedate").val();
         data.Labels = $("#labels .label").map(function (i, v) { return $(v).html(); }).toArray();
+        data.Data = getDynamicData($("#dataform-root").children());
 
         $.ajax({
             url: '/events',
@@ -105,8 +118,8 @@
             contentType: "application/json",
             success: function () {
                 $("#example").DataTable().ajax.reload()
-                $("#myModal").modal('toggle');
-                $("#myModal").find('form')[0].reset()
+                $("#modalCreateEvent").modal('toggle');
+                $("#modalCreateEvent").find('form')[0].reset()
             }
         });
     }
@@ -147,7 +160,7 @@
 
     function toggleModal_createEvent() {
         $("#modalCreateEvent").modal();
-        appendRow(false, $("#dataform-mainform"));
+        appendRow(false, $("#dataform-root"));
     }
 
     // main
@@ -227,7 +240,7 @@
                 <input type="text" class="form-control  dataform-value" placeholder="">
             </div>
             <div class="col-sm-3">
-                <select class="form-control">
+                <select class="form-control dataform-type">
                     <option selected="selected">Text</option>
                     <option>Object</option>
                 </select>
@@ -236,7 +249,7 @@
                 <button class="btn btn-success">Add</button>
             </div>
         </div>
-        <div class="form-group" style="margin-left: 100px">
+        <div class="form-group child-container" style="margin-left: 50px; margin-right:10px;">
             <div role="form" class="form-horizontal"></div>
         </div>
     </script>
@@ -257,10 +270,6 @@
             newRow.data("level", level);
             newRow.find("select").change(updateType);
             newRow.find("button").click(add_OnClick);
-
-            if (level > 0) {
-                //newRow.css("margin-left", "100px");
-            }
 
             if (increaseLevel) {
                 parent.next(".form-group").find(".form-horizontal").append(newRow);
@@ -337,9 +346,9 @@
                             <div id="labels" style="margin-top:10px"></div>
                         </div>
                         <div class="form-group">
-                            <div id="dataform-mainform" role="form" class="form-horizontal" data-level="0"></div>
+                            <label>Data</label>
+                            <div id="dataform-root" data-level="0" role="form" class="form-horizontal" style="margin-right:30px"></div>
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
