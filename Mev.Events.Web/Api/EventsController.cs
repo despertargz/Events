@@ -27,8 +27,9 @@ namespace Mev.Events.Web.Api
         {
             MongoCollection<Event> collection = this.GetCollection();
 
+            var data = collection.FindAll().ToArray();
             var result = new {
-                data = collection.FindAll().ToArray()
+                data = data
             };
 
             return result;
@@ -53,7 +54,7 @@ namespace Mev.Events.Web.Api
                 Status = Status.Pending,
                 Updated = DateTime.Now,
                 Tags = newEvent.Labels,
-                Data = BsonSerializer.Deserialize<BsonArray>(newEvent.Data.ToString())
+                Data = BsonDocument.Parse(newEvent.Data.ToString())
                 
             });
         }
@@ -101,11 +102,11 @@ namespace Mev.Events.Web.Api
         [POST("events/{id}/data")]
         public void AddData(string id, string key, string value)
         {
-            var col = this.GetCollection();
-            var myEvent = col.FindOneById(id);
-            myEvent.Data.key = value;
-            myEvent.Updated = DateTime.Now;
-            col.Save(myEvent);
+            //var col = this.GetCollection();
+            //var myEvent = col.FindOneById(id);
+            //myEvent.Data.key = value;
+            //myEvent.Updated = DateTime.Now;
+            //col.Save(myEvent);
             
         }
     }

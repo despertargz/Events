@@ -30,14 +30,14 @@ namespace Mev.Events.Lib
         public List<Alarm> Alarms { get; set; }
         public List<string> Tags { get; set; }
 
-        public dynamic Data { get; set; }
+        public BsonDocument Data { get; set; }
 
         public Event()
 	    {
             this.Comments = new List<Comment>();
             this.Alarms = new List<Alarm>();
             this.Tags = new List<string>();
-            this.Data = new ExpandoObject();
+            this.Data = new BsonDocument();
 	    }
 
         // children

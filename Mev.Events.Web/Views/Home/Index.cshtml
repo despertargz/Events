@@ -90,25 +90,45 @@
 
     // create event
 
-    function getDynamicData(rows) {
-        var list = [];
+    function getDynamicData(rows, type) {
+        var data = null;
+
+        if (type == "Object") {
+            data = {};
+        }
+        else {
+            data = [];
+        }
+
+        var myType = type;
         rows.each(function (index, row) {
             if (!$(row).hasClass("child-container") && $(row).find(".dataform-type").val() == "Text") {
                 var key = $(row).find(".dataform-key").val();
                 var value = $(row).find(".dataform-value").val();
-                list.push({ key: key, value: value });
+                if (myType == "Object") {
+                    data[key] = value;
+                }
+                else {
+                    data.push(value);
+                }
             }
-            else if (!$(row).hasClass("child-container") && $(row).find(".dataform-type").val() == "Object") {
+            else if (!$(row).hasClass("child-container")) {
                 var key = $(row).find(".dataform-key").val();
-                var value = getDynamicData($(row).next().find(".form-group"));
-                list.push({ key: key, value: value });
+                var type = $(row).find(".dataform-type").val();
+                var value = getDynamicData($(row).next().children().children(":not(.child-container)"), type);
+                if (myType == "Object") {
+                    data[key] = value;
+                }
+                else {
+                    data.push(value);
+                }
             }
             else {
                 console.log("unknown type");
             }
         });
 
-        return list;
+        return data;
     }
 
     function createAnEvent() {
@@ -118,7 +138,7 @@
         data.Description = $("#description").val();
         data.Due = $("#duedate").val();
         data.Labels = $("#labels .label").map(function (i, v) { return $(v).html(); }).toArray();
-        data.Data = getDynamicData($("#dataform-root").children());
+        data.Data = getDynamicData($("#dataform-root").children(), "Object");
 
         $.ajax({
             url: '/events',
