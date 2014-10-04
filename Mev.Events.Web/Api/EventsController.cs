@@ -1,6 +1,7 @@
 ﻿using AttributeRouting.Web.Http;
 using Mev.Events.Lib;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,9 @@ namespace Mev.Events.Web.Api
                 Subject = newEvent.Subject,
                 Status = Status.Pending,
                 Updated = DateTime.Now,
-                Tags = newEvent.Labels
+                Tags = newEvent.Labels,
+                Data = BsonSerializer.Deserialize<BsonArray>(newEvent.Data.ToString())
+                
             });
         }
 
@@ -114,6 +117,7 @@ namespace Mev.Events.Web.Api
         public DateTime? Due { get; set; }
         public Priority Priority { get; set; }
         public List<string> Labels { get; set; }
+        public dynamic Data { get; set; }
     }
     
 }
