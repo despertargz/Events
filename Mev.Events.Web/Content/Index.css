@@ -1,3 +1,4 @@
 ﻿#page { padding: 15px; }
 #header { margin-bottom: 10px; }
 .detailLabel { color: darkblue; font-weight: bold }
+#details p, #details select, #details div { display: inline }

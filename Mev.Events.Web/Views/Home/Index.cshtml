@@ -27,39 +27,41 @@
             <button class="btn btn-success" onclick="toggleModal_createEvent()">Create</button>
         </div>
         <div id="content">
-            <div>
-                <p class="detailLabel">Description</p>
-                <p id="description"></p>
-                <p class="detailLabel">Status</p>
-                <select data-bind="options: statuses, value: detail().Status, optionsText: 'name', optionsValue: 'id', event: { change: setStatus }"></select>
-                <p class="detailLabel">Priority</p>
-                <select data-bind="options: priorities, value: detail().Priority, optionsText: 'name', optionsValue: 'id', event: { change: setPriority }"></select>
+            <div id="details" class="well">
+                <p data-bind="text: detail().Subject"></p>
+                <br />
 
-                <p class="detailLabel">Tags</p>
+                <select data-bind="options: statuses, value: detail().Status, optionsText: 'name', optionsValue: 'id', event: { change: setStatus }"></select>
+                <select data-bind="options: priorities, value: detail().Priority, optionsText: 'name', optionsValue: 'id', event: { change: setPriority }"></select>
                 <div>
-                    <button class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                    <p style="font-size:32px" id="tags"><span class="label label-default">Comcast</span><span style="margin-left:2px" class="label label-default">Call</span></p>
+                    <p style="font-size:20px" id="tags"><span class="label label-default">Comcast</span><span style="margin-left:2px" class="label label-default">Call</span></p>
+                    <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-plus-sign"></span></button>
                 </div>
+                <br />
+
+                <p id="description" data-bind="text: detail().Description"></p>
+                <br />
 
                 <p class="detailLabel">Data</p>
                 <div id="data"></div>
+                <br />
+
                 <p class="detailLabel">Comments</p>
                 <div id="comments"></div>
             </div>
-            <table id="example" class="display" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>Subject</th>
-                        <th>Status</th>
-                        <th>Priority</th>
-                        <th>Due</th>
-                        <th>Created</th>
-                        <th>Updated</th>
-                    </tr>
-                </thead>
-            </table>
-            <div id="details">
-
+            <div>
+                <table id="example" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Due</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

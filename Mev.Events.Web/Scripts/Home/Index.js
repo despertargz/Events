@@ -157,15 +157,7 @@ $(document).ready(function () {
 
     $('#example tbody').on('click', 'tr', function () {
         var item = t.fnGetData(this);
-        var details = $("#details");
-
-        details.data('eventId', item._id);
-        $("#description").html(item.Description);
-
         window.viewModel.detail(item);
-
-
-
     });
 });
 
