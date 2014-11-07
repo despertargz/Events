@@ -220,6 +220,11 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.2.0.debug.js" />
+    <Content Include="Scripts\knockout-3.2.0.js" />
+    <Content Include="Scripts\knockout-mapping.js" />
+    <Content Include="Scripts\knockout.mapping-latest.debug.js" />
+    <Content Include="Scripts\knockout.mapping-latest.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
@@ -228,6 +233,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Scripts\Home\DataForm.js" />
+    <Content Include="Content\Index.css" />
+    <Content Include="Scripts\Home\Index.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -239,7 +247,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Test\Test.cshtml" />
+    <Content Include="Views\Test\Angular.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

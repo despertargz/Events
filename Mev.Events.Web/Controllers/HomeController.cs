@@ -18,6 +18,12 @@ namespace Mev.Events.Web.Controllers
             return View();
         }
 
+        public ActionResult Angular()
+        {
+            return View();
+        }
+        
+
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

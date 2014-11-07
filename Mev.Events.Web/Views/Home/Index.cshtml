@@ -2,6 +2,7 @@
     
 }
 
+<html>
 <head>
     <title>Events</title>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -16,223 +17,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-    <script src="~/Scripts/moment.min.js"></script>
+    
 
-    <script id="templateDetails" type="text/html">
-        <div>
-            <p class="detailLabel">Description</p>
-            <p id="description"></p>
-            <p class="detailLabel">Status</p>
-            <select id="status" onchange="setStatus()">
-                <option value="0">Pending</option>
-                <option value="1">Working</option>
-                <option value="2">Completed</option>
-                <option value="3">Waiting</option>
-                <option value="4">Blocked</option>
-                <option value="5">Cancelled</option>
-            </select>
-            <p class="detailLabel">Priority</p>
-            <select id="priority" onchange="setPriority()">
-                <option value="1">Very Low</option>
-                <option value="2">Low</option>
-                <option value="3">Normal</option>
-                <option value="4">High</option>
-                <option value="5">Very High</option>
-            </select>
-            <p class="detailLabel">Tags</p>
-            <div>
-                <button class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                <p style="font-size:32px" id="tags"><span class="label label-default">Comcast</span><span style="margin-left:2px" class="label label-default">Call</span></p>
-            </div>
-            
-            <p class="detailLabel">Data</p>
-            <div id="data"></div>
-            <p class="detailLabel">Comments</p>
-            <div id="comments"></div>
-        </div>
-    </script>
-<script>
-    // functions
 
-    function formatDate(date) {
-        if (date) {
-            return moment(date).format("MM/DD/YY");
-        }
-        else {
-            return null;
-        }
-    }
-
-    function formatPriority(priority) {
-        var priorityLookup = {
-            1: "Very Low",
-            2: "Low",
-            3: "Normal",
-            4: "High",
-            5: "Very High"
-        };
-
-        return priorityLookup[priority];
-    }
-
-    function formatStatus(status) {
-        var statusLookup = {
-            0: "Pending",
-            1: "Working",
-            2: "Completed",
-            3: "Waiting",
-            4: "Blocked",
-            5: "Cancelled"
-        };
-
-        return statusLookup[status];
-    }
-
-    // create event
-
-    function getDynamicData(rows, type) {
-        var data = null;
-
-        if (type == "Object") {
-            data = {};
-        }
-        else {
-            data = [];
-        }
-
-        var myType = type;
-        rows.each(function (index, row) {
-            if (!$(row).hasClass("child-container") && $(row).find(".dataform-type").val() == "Text") {
-                var key = $(row).find(".dataform-key").val();
-                var value = $(row).find(".dataform-value").val();
-                if (myType == "Object") {
-                    data[key] = value;
-                }
-                else {
-                    data.push(value);
-                }
-            }
-            else if (!$(row).hasClass("child-container")) {
-                var key = $(row).find(".dataform-key").val();
-                var type = $(row).find(".dataform-type").val();
-                var value = getDynamicData($(row).next().children().children(":not(.child-container)"), type);
-                if (myType == "Object") {
-                    data[key] = value;
-                }
-                else {
-                    data.push(value);
-                }
-            }
-            else {
-                console.log("unknown type");
-            }
-        });
-
-        return data;
-    }
-
-    function createAnEvent() {
-        var data = new Object();
-        data.Priority = $("#priority").val();
-        data.Subject = $("#subject").val();
-        data.Description = $("#description").val();
-        data.Due = $("#duedate").val();
-        data.Labels = $("#labels .label").map(function (i, v) { return $(v).html(); }).toArray();
-        data.Data = getDynamicData($("#dataform-root").children(), "Object");
-
-        $.ajax({
-            url: '/events',
-            method: 'POST',
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            success: function () {
-                $("#example").DataTable().ajax.reload()
-                $("#modalCreateEvent").modal('toggle');
-                $("#modalCreateEvent").find('form')[0].reset()
-            }
-        });
-    }
-
-    function addTag() {
-        var newLabel = $("#newLabel").val();
-        $("#newLabel").val('');
-        $("#newLabel").focus();
-        $("#labels").append('<p style="margin-left: 3px; display:inline; font-size:20px;"><span style="background-color:darkblue;" class="label label-default">' + newLabel + '</span></p>');
-        
-    }
-
-    function setStatus() {
-        var eventId = $("#details").data('eventId');
-        var newStatus = $("#status").val();
-
-        $.ajax({
-            url: '/events/' + eventId + "/status?status=" + newStatus,
-            method: 'POST',
-            success: function () {
-                $("#example").DataTable().ajax.reload()
-            }
-        });
-    }
-
-    function setPriority() {
-        var eventId = $("#details").data('eventId');
-        var newPriority = $("#priority").val();
-
-        $.ajax({
-            url: '/events/' + eventId + "/priority?priority=" + newPriority,
-            method: 'POST',
-            success: function () {
-                $("#example").DataTable().ajax.reload()
-            }
-        });
-    }
-
-    function toggleModal_createEvent() {
-        $("#modalCreateEvent").modal();
-        appendRow(false, $("#dataform-root"));
-    }
-
-    // main
-        $(document).ready(function () {
-            var t = $('#example').dataTable({
-                "ajax": "/events",
-                "columns": [
-                    { "data": "Subject", width: "75%" },
-                    { "data": "Status", width: "5%", render: formatStatus },
-                    { "data": "Priority", width: "5%", render: formatPriority },
-                    { "data": "Due", width: "5%", render: formatDate },
-                    { "data": "Created", width: "5%", render: formatDate },
-                    { "data": "Updated", width: "5%", render: formatDate },
-
-                ]
-            });
-
-            $('#example tbody').on('click', 'tr', function () {
-                var item = t.fnGetData(this);
-                var details = $("#details");
-
-                details.data('eventId', item._id);
-
-                details.html($("#templateDetails").text());
-                
-                $("#description").html(item.Description);
-
-                var found = $("#status option[value=" + item.Status + "]");
-                found.prop('selected', true);
-                $("#priority option[value=" + item.Priority + "]").prop('selected', true);
-
-                item.Comments.forEach(function (comment) {
-                    $("#comments").append("<p>" + comment.Time + ": " + comment.Message + "</p>");
-                });
-            });
-        });
-    </script>
-
-    <style>
-        #page { padding: 15px; }
-        #header { margin-bottom: 10px; }
-        .detailLabel { color: darkblue; font-weight: bold }
-    </style>
 </head>
 <body>
     <div id="page">
@@ -240,6 +27,25 @@
             <button class="btn btn-success" onclick="toggleModal_createEvent()">Create</button>
         </div>
         <div id="content">
+            <div>
+                <p class="detailLabel">Description</p>
+                <p id="description"></p>
+                <p class="detailLabel">Status</p>
+                <select data-bind="options: statuses, value: detail().Status, optionsText: 'name', optionsValue: 'id', event: { change: setStatus }"></select>
+                <p class="detailLabel">Priority</p>
+                <select data-bind="options: priorities, value: detail().Priority, optionsText: 'name', optionsValue: 'id', event: { change: setPriority }"></select>
+
+                <p class="detailLabel">Tags</p>
+                <div>
+                    <button class="btn btn-success"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                    <p style="font-size:32px" id="tags"><span class="label label-default">Comcast</span><span style="margin-left:2px" class="label label-default">Call</span></p>
+                </div>
+
+                <p class="detailLabel">Data</p>
+                <div id="data"></div>
+                <p class="detailLabel">Comments</p>
+                <div id="comments"></div>
+            </div>
             <table id="example" class="display" cellspacing="0" width="100%">
                 <thead>
                     <tr>
@@ -305,76 +111,6 @@
         </div>
     </script>
 
-    <script>
-        function add_OnClick() {
-            var parent = $(this).closest(".form-group");
-            appendRow(false, parent);
-        }
-
-        function appendRow(increaseLevel, parent) {
-            var level = parent.data("level");
-            var currentType = null;
-            if (increaseLevel) {
-                level += 1;
-
-                // when increasing level we want to look at the type of the CURRENT ROW
-                currentType = parent.find(".dataform-type").val(); 
-            }
-            else {
-                // when appending to an already indented row we want to look at the PARENT ROW type to see if it is list of object
-                currentType = parent.closest(".child-container").prev().find(".dataform-type").val(); 
-            }
-
-
-            var newRow = null;
-            if (currentType == "List") {
-                newRow = $($("#templateValueFormRow").text());
-            }
-            else {
-                newRow = $($("#templatePropertyFormRow").text());
-            }
-            
-            newRow.data("level", level);
-            newRow.find("select").change(updateType);
-            newRow.find("button").click(add_OnClick);
-
-            if (increaseLevel) {
-                parent.next(".form-group").find(".form-horizontal").append(newRow);
-            }
-            else {
-                parent.closest(".form-horizontal").append(newRow);
-            }
-
-            if (currentType == "List") {
-                newRow.find(".dataform-value").focus();
-            }
-            else {
-                newRow.find(".dataform-key").focus();
-            }
-            event.preventDefault();
-        }
-
-        function updateType() {
-            var valueType = $(this).val();
-            var valueWrapper = $(this).parent().siblings('.dataform-value-wrapper');
-            var value = valueWrapper.children();
-            var formGroup = $(this).closest(".form-group");
-
-            value.prop('disabled', true);
-            $(this).prop('disabled', true);
-            var nextLevel = formGroup.data("level") + 1;
-
-            appendRow(true, formGroup);
-        }
-
-        function createForm() {
-            var mainForm = $('<form id="mainForm" role="form" class="form-horizontal" data-level="0"></form>');
-            appendRow(false, mainForm);
-            return mainForm;
-        }
-    </script>
-
-
     <!-- Modal -->
     <div class="modal fade" id="modalCreateEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -428,4 +164,14 @@
             </div>
         </div>
     </div>
+
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/knockout-3.2.0.js"></script>
+    <script src="~/Scripts/knockout.mapping-latest.js"></script>
+
+    <!--page-->
+    <script src="~/Scripts/Home/DataForm.js"></script>
+    <script src="~/Scripts/Home/Index.js"></script>
+    <link href="~/Content/Index.css" rel="stylesheet" />
 </body>
+</html>

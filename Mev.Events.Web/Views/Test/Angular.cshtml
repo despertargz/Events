@@ -1,0 +1,43 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html ng-app="testApp">
+<head>
+    <title>Angular</title>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script>
+        var testApp = angular.module('testApp', []);
+        testApp.controller('testController', function ($scope, $compile) {
+            $scope.letters = ["a", "b", "c"];
+
+            $scope.add = function () {
+                $scope.letters.push("z");
+            };
+
+            var button = $("button");
+            button.attr("ng-click", "add()");
+            $compile(button)($scope);
+
+        });
+
+        $(document).ready(function () {
+           
+        });
+    </script>
+</head>
+<body ng-controller="testController">
+    <div> 
+        <button>Add</button>
+        <input type="text" ng-model="name" />
+        <p>{{name}}</p>
+        <ul>
+            <li ng-repeat="letter in letters track by $index">LETTER: {{letter}}</li>
+        </ul>
+    </div>
+</body>
+</html>
